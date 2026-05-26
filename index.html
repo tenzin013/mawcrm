@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAW Customer360 — Contact Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0b0f;
+      --surface:   #111318;
+      --border:    #1e2130;
+      --border-hi: #2e3250;
+      --accent:    #e8c547;
+      --accent-dk: #c9a928;
+      --text:      #eef0f6;
+      --muted:     #6b7185;
+      --success:   #4ade80;
+      --error:     #f87171;
+      --radius:    14px;
+      --trans:     0.22s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated background grid ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(232,197,71,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,197,71,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -30vh; left: -20vw;
+      width: 80vw; height: 80vh;
+      background: radial-gradient(ellipse at center, rgba(232,197,71,.07) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 56px;
+      animation: fadeUp .6s ease both;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,197,71,.1);
+      border: 1px solid rgba(232,197,71,.25);
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 22px;
+    }
+    .badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -.03em;
+      margin-bottom: 14px;
+    }
+    h1 em { font-style: normal; color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 15px; line-height: 1.65; max-width: 480px; }
+
+    /* ── Tab switcher ── */
+    .tabs {
+      display: flex; gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 36px;
+      animation: fadeUp .6s .1s ease both;
+    }
+    .tab-btn {
+      flex: 1; cursor: pointer;
+      background: transparent; border: none;
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: .04em;
+      padding: 11px 20px; border-radius: 8px;
+      transition: var(--trans);
+      position: relative;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0a0b0f;
+    }
+    .tab-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,.05); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      animation: fadeUp .6s .2s ease both;
+      display: none;
+    }
+    .card.active { display: block; }
+
+    .card-header { margin-bottom: 28px; }
+    .card-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: -.01em; margin-bottom: 6px;
+    }
+    .card-header p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ── Form grid ── */
+    .form-grid { display: grid; gap: 18px; }
+    .form-grid.two-col { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 560px) { .form-grid.two-col { grid-template-columns: 1fr; } }
+    .span-full { grid-column: 1 / -1; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    label {
+      font-size: 11.5px; font-weight: 500;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    label .req { color: var(--accent); margin-left: 2px; }
+
+    input, textarea, select {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 12px 14px;
+      width: 100%;
+      transition: var(--trans);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      background: rgba(232,197,71,.04);
+      box-shadow: 0 0 0 3px rgba(232,197,71,.12);
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    select option { background: #1a1d2e; }
+
+    /* Color swatch picker */
+    .color-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .color-swatch {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 2px solid transparent; cursor: pointer;
+      transition: var(--trans); position: relative;
+    }
+    .color-swatch.selected { border-color: var(--accent); transform: scale(1.15); }
+    .color-swatch:hover { transform: scale(1.1); }
+    #color-custom-wrap { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    #color-custom-wrap input[type="text"] { max-width: 160px; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%; cursor: pointer;
+      background: var(--accent);
+      border: none; border-radius: 10px;
+      color: #0a0b0f;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      padding: 15px;
+      transition: var(--trans);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--accent-dk); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,197,71,.2); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-submit .spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(0,0,0,.2);
+      border-top-color: #0a0b0f; border-radius: 50%;
+      animation: spin .7s linear infinite; display: none;
+    }
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text { display: none; }
+
+    /* ── Toast ── */
+    .toast-wrap {
+      position: fixed; bottom: 32px; right: 32px; z-index: 999;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .toast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 13.5px;
+      display: flex; align-items: center; gap: 12px;
+      max-width: 340px;
+      animation: slideIn .3s ease;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+    .toast.success { border-color: rgba(74,222,128,.3); }
+    .toast.error   { border-color: rgba(248,113,113,.3); }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+    .toast-body strong { display: block; font-size: 13px; font-family: 'Syne', sans-serif; }
+    .toast-body span { color: var(--muted); font-size: 12px; }
+    .toast.fadeout { animation: fadeOut .3s ease forwards; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: .4; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateX(30px); }
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 60px; text-align: center;
+      color: var(--muted); font-size: 12px;
+      animation: fadeUp .6s .4s ease both;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <div class="badge"><span></span>MAW Customer360</div>
+    <h1>Contact <em>Portal</em></h1>
+    <p class="subtitle">Submit a new lead or raise a customer concern. All submissions are securely forwarded to the Customer360 platform.</p>
+  </header>
+
+  <!-- Tab Switcher -->
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" role="tab" onclick="switchTab('leads', this)">🎯 Submit a Lead</button>
+    <button class="tab-btn"        role="tab" onclick="switchTab('concerns', this)">📋 Raise a Concern</button>
+  </div>
+
+  <!-- ── LEADS FORM ── -->
+  <div class="card active" id="tab-leads">
+    <div class="card-header">
+      <h2>New Lead Submission</h2>
+      <p>Fill in the contact and product details below to register a new lead.</p>
+    </div>
+
+    <form id="form-leads" novalidate>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label for="l-name">Contact Name <span class="req">*</span></label>
+          <input type="text" id="l-name" name="contact_name" placeholder="e.g. John Santos" required />
+        </div>
+        <div class="field">
+          <label for="l-email">Email Address <span class="req">*</span></label>
+          <input type="email" id="l-email" name="email" placeholder="john@company.com" required />
+        </div>
+        <div class="field">
+          <label for="l-phone">Contact Number <span class="req">*</span></label>
+          <input type="tel" id="l-phone" name="contact_number" placeholder="+63 917 000 0000" required />
+        </div>
+        <div class="field">
+          <label for="l-product">Product Code <span class="req">*</span></label>
+          <input type="text" id="l-product" name="product_code" placeholder="e.g. PROD-001" required />
+        </div>
+        <div class="field">
+          <label for="l-company">Company Code <span class="req">*</span></label>
+          <input type="text" id="l-company" name="company_code" placeholder="e.g. MAW-HQ" required />
+        </div>
+        <div class="field">
+          <label for="l-color-text">Color</label>
+          <input type="text" id="l-color-text" name="color" placeholder="e.g. Red, #e8c547" />
+        </div>
+        <div class="field span-full">
+          <label for="l-remarks">Remarks</label>
+          <textarea id="l-remarks" name="remarks" placeholder="Any additional notes about this lead…"></textarea>
+        </div>
+      </div>
+      <hr class="divider" />
+      <button type="submit" class="btn-submit">
+        <div class="spinner"></div>
+        <span class="btn-text">Submit Lead →</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- ── CONCERNS FORM ── -->
+  <div class="card" id="tab-concerns">
+    <div class="card-header">
+      <h2>Customer Concern</h2>
+      <p>Raise a service or product concern. Include as much detail as possible for faster resolution.</p>
+    </div>
+
+    <form id="form-concerns" novalidate>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label for="c-name">Contact Name <span class="req">*</span></label>
+          <input type="text" id="c-name" name="contact_name" placeholder="e.g. Maria Cruz" required />
+        </div>
+        <div class="field">
+          <label for="c-email">Email Address <span class="req">*</span></label>
+          <input type="email" id="c-email" name="email" placeholder="maria@company.com" required />
+        </div>
+        <div class="field">
+          <label for="c-phone">Contact Number <span class="req">*</span></label>
+          <input type="tel" id="c-phone" name="contact_number" placeholder="+63 917 000 0000" required />
+        </div>
+        <div class="field">
+          <label for="c-product">Product Code <span class="req">*</span></label>
+          <input type="text" id="c-product" name="product_code" placeholder="e.g. PROD-001" required />
+        </div>
+        <div class="field">
+          <label for="c-company">Company Code <span class="req">*</span></label>
+          <input type="text" id="c-company" name="company_code" placeholder="e.g. MAW-HQ" required />
+        </div>
+        <div class="field">
+          <label for="c-bucket">Bucket Type <span class="req">*</span></label>
+          <select id="c-bucket" name="bucket_type" required>
+            <option value="" disabled selected>Select a bucket…</option>
+            <option value="billing">Billing</option>
+            <option value="technical">Technical</option>
+            <option value="delivery">Delivery</option>
+            <option value="complaint">Complaint</option>
+            <option value="inquiry">Inquiry</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-color-text">Color</label>
+          <input type="text" id="c-color-text" name="color" placeholder="e.g. Blue, #4a90e2" />
+        </div>
+        <div class="field span-full">
+          <label for="c-remarks">Remarks <span class="req">*</span></label>
+          <textarea id="c-remarks" name="remarks" placeholder="Describe the concern in detail…" required></textarea>
+        </div>
+      </div>
+      <hr class="divider" />
+      <button type="submit" class="btn-submit">
+        <div class="spinner"></div>
+        <span class="btn-text">Submit Concern →</span>
+      </button>
+    </form>
+  </div>
+
+  <footer>
+    Powered by <a href="https://maw-customer360.server247.info" target="_blank">MAW Customer360</a> &nbsp;·&nbsp; All data is encrypted in transit.
+  </footer>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+  const API_KEY = 'cyjxer0cocjudexKyj';
+  const BASE    = 'https://maw-customer360.server247.info/api/v1';
+
+  /* ─── Tab switcher ─── */
+  function switchTab(id, btn) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* ─── Toast helper ─── */
+  function showToast(type, title, message) {
+    const wrap = document.getElementById('toasts');
+    const icon = type === 'success' ? '✅' : '❌';
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.innerHTML = `<span class="toast-icon">${icon}</span>
+      <div class="toast-body"><strong>${title}</strong><span>${message}</span></div>`;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.classList.add('fadeout');
+      setTimeout(() => el.remove(), 320);
+    }, 4500);
+  }
+
+  /* ─── Generic form serializer ─── */
+  function serializeForm(form) {
+    const data = {};
+    new FormData(form).forEach((v, k) => { data[k] = v.trim(); });
+    return data;
+  }
+
+  /* ─── Validate required fields ─── */
+  function validate(form) {
+    let ok = true;
+    form.querySelectorAll('[required]').forEach(el => {
+      el.style.borderColor = '';
+      if (!el.value.trim()) {
+        el.style.borderColor = 'var(--error)';
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
+  /* ─── Submit helper ─── */
+  async function postForm(form, endpoint) {
+    if (!validate(form)) {
+      showToast('error', 'Validation Error', 'Please fill in all required fields.');
+      return;
+    }
+
+    const btn = form.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    const payload = serializeForm(form);
+
+    try {
+      const res = await fetch(`${BASE}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'HTTP-API-KEY': API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        showToast('success', 'Submitted!', `Your ${endpoint === 'leads' ? 'lead' : 'concern'} was sent successfully.`);
+        form.reset();
+        form.querySelectorAll('[style]').forEach(el => el.style.borderColor = '');
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast('error', `Error ${res.status}`, err.message || err.detail || 'Submission failed. Please try again.');
+      }
+    } catch (e) {
+      showToast('error', 'Network Error', 'Could not reach the server. Check your connection.');
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
+
+  /* ─── Form listeners ─── */
+  document.getElementById('form-leads').addEventListener('submit', e => {
+    e.preventDefault();
+    postForm(e.target, 'leads');
+  });
+
+  document.getElementById('form-concerns').addEventListener('submit', e => {
+    e.preventDefault();
+    postForm(e.target, 'concerns');
+  });
+
+  /* ─── Clear red border on input ─── */
+  document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', () => { el.style.borderColor = ''; });
+  });
+</script>
+</body>
+</html>
