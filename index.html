@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MAW Customer360 — Customer Feedback Portal</title>
+<title>MAW Customer360 — Contact Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -146,7 +146,7 @@ footer a{color:var(--b2);text-decoration:none;font-weight:500}
       <div class="logo-icon">⚡</div>
       <div class="logo-name">MAW Customer360</div>
     </div>
-    <h1 class="hero-title">Customer <span class="gradient-text">Feedback</span><br/>Portal</h1>
+    <h1 class="hero-title">Smart <span class="gradient-text">Contact</span><br/>Portal</h1>
     <p class="hero-sub">Register leads and raise concerns directly to the Customer360 platform — beautifully, instantly, securely.</p>
     <div class="stats">
       <div class="stat"><div class="stat-dot g"></div><div class="stat-text"><strong>Live</strong> API Connected</div></div>
@@ -202,10 +202,32 @@ footer a{color:var(--b2);text-decoration:none;font-weight:500}
             </div>
             <div class="field-hint">Phone number required</div>
           </div>
-          <div class="field">
+          <div class="field span-full">
             <div class="field-wrap">
-              <input class="field-input" type="text" id="l-product" name="product_code" placeholder="e.g. SC6471EAJBEV" required/>
-              <label class="field-label" for="l-product">Product Code ✦</label>
+              <select class="field-input" id="l-product" name="product_code" required onchange="this.classList.add('hv')">
+                <option value="" disabled selected></option>
+                <option value="SC7144BAA4 PKH2002">CHANGAN ALSVIN — SC7144BAA4 PKH2002</option>
+                <option value="SC6501AAABEV">CHANGAN DEEPAL E07 — SC6501AAABEV</option>
+                <option value="SC7006AARBEV">CHANGAN DEEPAL L07 — SC7006AARBEV</option>
+                <option value="SC6471EAJBEV">CHANGAN DEEPAL S07 — SC6471EAJBEV</option>
+                <option value="SC1031PAAD4 B6D">CHANGAN HUNTER AT — SC1031PAAD4 B6D</option>
+                <option value="SC1031PAAA4 B5D">CHANGAN HUNTER MT — SC1031PAAA4 B5D</option>
+                <option value="SC7001FAWBEV">CHANGAN LUMIN — SC7001FAWBEV</option>
+                <option value="SC6464AAFBEV">DEEPAL S05 — SC6464AAFBEV</option>
+                <option value="E502">DFSK Mini EV 180 KM-Full Option — E502</option>
+                <option value="E502-220">DFSK Mini EV 220 KM — E502-220</option>
+                <option value="DFM7000A2F4UBEV">DONGFENG NAMMI BOX — DFM7000A2F4UBEV</option>
+                <option value="DFM7000A2F48EV">DONGFENG NAMMI BOX — DFM7000A2F48EV</option>
+                <option value="EC35">EV Cargo Van — EC35</option>
+                <option value="BJ2037Y3MDV-RF">FOTON TUNLAND PICKUP-E — BJ2037Y3MDV-RF</option>
+                <option value="DFM7000A2F3UBEV">NAMMI BOX — DFM7000A2F3UBEV</option>
+                <option value="SERES 3 (S) COMFORT">SERES 3 (S) COMFORT — SERES 3 (S) COMFORT</option>
+                <option value="SERES3(S) C FACELIFT">SERES 3 (S) Comfort Facelift — SERES3(S) C FACELIFT</option>
+                <option value="SERES3 (S) PREMIUM">SERES3 (S) PREMIUM — SERES3 (S) PREMIUM</option>
+                <option value="SERES3(S) P FACELIFT">SERES3(S) PREMIUM FACELIFT — SERES3(S) P FACELIFT</option>
+                <option value="EC 36">SOKON 11 SEATER VAN — EC 36</option>
+              </select>
+              <label class="field-label" for="l-product">Product ✦</label>
               <span class="field-vmark">✓</span>
             </div>
             <div class="field-hint">Product code required</div>
@@ -290,10 +312,32 @@ footer a{color:var(--b2);text-decoration:none;font-weight:500}
             </div>
             <div class="field-hint">Phone number required</div>
           </div>
-          <div class="field">
+          <div class="field span-full">
             <div class="field-wrap">
-              <input class="field-input" type="text" id="c-product" name="product_code" placeholder="e.g. SC6471EAJBEV" required/>
-              <label class="field-label" for="c-product">Product Code ✦</label>
+              <select class="field-input" id="c-product" name="product_code" required onchange="this.classList.add('hv')">
+                <option value="" disabled selected></option>
+                <option value="SC7144BAA4 PKH2002">CHANGAN ALSVIN — SC7144BAA4 PKH2002</option>
+                <option value="SC6501AAABEV">CHANGAN DEEPAL E07 — SC6501AAABEV</option>
+                <option value="SC7006AARBEV">CHANGAN DEEPAL L07 — SC7006AARBEV</option>
+                <option value="SC6471EAJBEV">CHANGAN DEEPAL S07 — SC6471EAJBEV</option>
+                <option value="SC1031PAAD4 B6D">CHANGAN HUNTER AT — SC1031PAAD4 B6D</option>
+                <option value="SC1031PAAA4 B5D">CHANGAN HUNTER MT — SC1031PAAA4 B5D</option>
+                <option value="SC7001FAWBEV">CHANGAN LUMIN — SC7001FAWBEV</option>
+                <option value="SC6464AAFBEV">DEEPAL S05 — SC6464AAFBEV</option>
+                <option value="E502">DFSK Mini EV 180 KM-Full Option — E502</option>
+                <option value="E502-220">DFSK Mini EV 220 KM — E502-220</option>
+                <option value="DFM7000A2F4UBEV">DONGFENG NAMMI BOX — DFM7000A2F4UBEV</option>
+                <option value="DFM7000A2F48EV">DONGFENG NAMMI BOX — DFM7000A2F48EV</option>
+                <option value="EC35">EV Cargo Van — EC35</option>
+                <option value="BJ2037Y3MDV-RF">FOTON TUNLAND PICKUP-E — BJ2037Y3MDV-RF</option>
+                <option value="DFM7000A2F3UBEV">NAMMI BOX — DFM7000A2F3UBEV</option>
+                <option value="SERES 3 (S) COMFORT">SERES 3 (S) COMFORT — SERES 3 (S) COMFORT</option>
+                <option value="SERES3(S) C FACELIFT">SERES 3 (S) Comfort Facelift — SERES3(S) C FACELIFT</option>
+                <option value="SERES3 (S) PREMIUM">SERES3 (S) PREMIUM — SERES3 (S) PREMIUM</option>
+                <option value="SERES3(S) P FACELIFT">SERES3(S) PREMIUM FACELIFT — SERES3(S) P FACELIFT</option>
+                <option value="EC 36">SOKON 11 SEATER VAN — EC 36</option>
+              </select>
+              <label class="field-label" for="c-product">Product ✦</label>
               <span class="field-vmark">✓</span>
             </div>
             <div class="field-hint">Product code required</div>
