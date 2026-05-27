@@ -262,6 +262,7 @@ footer a{color:var(--b2);text-decoration:none;font-weight:500}
               <div class="color-chip" style="background:#1a7fff" onclick="pickColor('l','Blue',this)"></div>
               <div class="color-chip" style="background:#a855f7" onclick="pickColor('l','Purple',this)"></div>
               <div class="color-chip" style="background:#ec4899" onclick="pickColor('l','Pink',this)"></div>
+              <div class="color-chip" style="background:#111111;border:2px solid rgba(255,255,255,.2)" onclick="pickColor('l','Black',this)"></div>
               <input type="hidden" id="l-color" name="color" value=""/>
             </div>
           </div>
@@ -393,6 +394,7 @@ footer a{color:var(--b2);text-decoration:none;font-weight:500}
               <div class="color-chip" style="background:#1a7fff" onclick="pickColor('c','Blue',this)"></div>
               <div class="color-chip" style="background:#a855f7" onclick="pickColor('c','Purple',this)"></div>
               <div class="color-chip" style="background:#ec4899" onclick="pickColor('c','Pink',this)"></div>
+              <div class="color-chip" style="background:#111111;border:2px solid rgba(255,255,255,.2)" onclick="pickColor('c','Black',this)"></div>
               <input type="hidden" id="c-color" name="color" value=""/>
             </div>
           </div>
@@ -574,8 +576,22 @@ async function post(form,ep){
       form.querySelectorAll('.color-chip').forEach(c=>c.classList.remove('active'));
       updProg(form.id,ep==='leads'?'l-fill':'c-fill',ep==='leads'?'l-pct':'c-pct');
     }else{
-      const e=await res.json().catch(()=>({}));
-      showToast('error','Error '+res.status,e.message||e.detail||'Submission failed. Please retry.');
+      let errMsg='Submission failed. Please retry.';
+      try{
+        const raw=await res.text();
+        try{
+          const e=JSON.parse(raw);
+          if(typeof e.detail==='string') errMsg=e.detail;
+          else if(Array.isArray(e.detail)) errMsg=e.detail.map(d=>d.msg||(d.loc?d.loc.join('\u2192')+': '+(d.msg||''):'Unknown error')).join(' \u2022 ');
+          else if(typeof e.message==='string') errMsg=e.message;
+          else if(typeof e.error==='string') errMsg=e.error;
+          else if(typeof e.errors==='object'&&e.errors) errMsg=Object.entries(e.errors).map(([k,v])=>k+': '+v).join(' \u2022 ');
+          else if(raw.trim()) errMsg=raw.length>200?raw.slice(0,200)+'\u2026':raw;
+        }catch(_){
+          if(raw.trim()) errMsg=raw.length>200?raw.slice(0,200)+'\u2026':raw;
+        }
+      }catch(_){}
+      showToast('error','Error '+res.status,errMsg);
     }
   }catch(e){
     showToast('error','Network Error','Could not reach the server. Check your connection.');
